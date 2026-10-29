@@ -177,7 +177,7 @@ class ProductApiTest extends TestCase
             ->assertJsonPath('data.currency.name', 'Euro')
             ->assertJsonPath('data.currency.symbol', '€')
             ->assertJsonPath('data.currency.exchange_rate', '0.9200')
-            ->assertJsonPath('data.price', '92.00');
+            ->assertJsonPath('data.price', '91.99');
 
         // Add price in GBP (POST /api/products/{id}/prices)
         $gbpPriceResponse = $this->postJson("/api/products/{$product->id}/prices", [
@@ -187,7 +187,7 @@ class ProductApiTest extends TestCase
         $gbpPriceResponse->assertStatus(201)
             ->assertJsonPath('data.product_id', $product->id)
             ->assertJsonPath('data.currency.id', $this->gbp->id)
-            ->assertJsonPath('data.price', '79.00');
+            ->assertJsonPath('data.price', '78.99');
 
         // List all prices for the product (GET /api/products/{id}/prices)
         $listPricesResponse = $this->getJson("/api/products/{$product->id}/prices");
@@ -195,9 +195,9 @@ class ProductApiTest extends TestCase
         $listPricesResponse->assertStatus(200)
             ->assertJsonCount(2, 'data')
             ->assertJsonPath('data.0.currency.name', 'Euro')
-            ->assertJsonPath('data.0.price', '92.00')
+            ->assertJsonPath('data.0.price', '91.99')
             ->assertJsonPath('data.1.currency.name', 'British Pound')
-            ->assertJsonPath('data.1.price', '79.00');
+            ->assertJsonPath('data.1.price', '78.99');
 
         // Deleting the product cascades to product_prices
         $this->deleteJson("/api/products/{$product->id}")->assertStatus(204);

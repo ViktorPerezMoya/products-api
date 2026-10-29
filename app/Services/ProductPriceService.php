@@ -41,12 +41,12 @@ class ProductPriceService
     {
         $product = $this->productRepository->findOrFail($productId);
 
-        $targetCurrency = $this->currencyRepository->findOrFail($data['currency_id']);
+        $targetCurrency = $this->currencyRepository->findOrFail((int) $data['currency_id']);
 
         // get factor conversion of product
-        $factorConversion = ($targetCurrency->exchange_rate / $product->currency->exchange_rate);
+        $factorConversion = ((float)$targetCurrency->exchange_rate / (float) $product->currency->exchange_rate);
 
-        $data['price'] = round($product->price * $factorConversion, 2);
+        $data['price'] = round((float) $product->price * $factorConversion, 2);
 
         return $this->productPriceRepository->createForProduct($productId, $data);
     }
