@@ -30,6 +30,11 @@ class CurrencySeeder extends Seeder
                 'symbol' => '£',
                 'exchange_rate' => '0.7900',
             ],
+            [
+                'name' => 'Peso Argentino',
+                'symbol' => 'ARS',
+                'exchange_rate' => '1500.0000',
+            ],
         ];
 
         foreach ($currencies as $currency) {
