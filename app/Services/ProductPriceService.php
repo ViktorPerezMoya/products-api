@@ -32,7 +32,7 @@ class ProductPriceService
     }
 
     /**
-     * Assign a new currency price to a specific product.
+     * Assign a new currency to a specific product and calculate the price.
      * Ensures the product exists before creating the price record (throws 404 if not found).
      *
      * @param  array<string, mixed>  $data
