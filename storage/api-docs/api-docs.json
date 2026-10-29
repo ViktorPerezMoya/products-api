@@ -1,0 +1,607 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Product API",
+        "description": "RESTful API managing products and multi-currency pricing",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "List all products",
+                "description": "List all products.",
+                "operationId": "getProductsList",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "description": "Create a new product.",
+                "operationId": "storeProduct",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Retrieve a single product by ID",
+                "description": "Retrieve a single product by ID.",
+                "operationId": "getProductById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update an existing product",
+                "description": "Update an existing product.",
+                "operationId": "updateProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "description": "Delete a product.",
+                "operationId": "deleteProduct",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product deleted successfully (No Content)"
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/{id}/prices": {
+            "get": {
+                "tags": [
+                    "Product Prices"
+                ],
+                "summary": "List all prices for a given product",
+                "description": "List all prices for a given product.",
+                "operationId": "getProductPrices",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductPrice"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Product Prices"
+                ],
+                "summary": "Add a new price in a specific currency for a product",
+                "description": "Add a new price in a specific currency for a product.",
+                "operationId": "storeProductPrice",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreProductPriceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product price created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductPrice"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Currency": {
+                "required": [
+                    "id",
+                    "name",
+                    "symbol",
+                    "exchange_rate"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "US Dollar"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "$"
+                    },
+                    "exchange_rate": {
+                        "type": "string",
+                        "example": "1.0000"
+                    }
+                },
+                "type": "object"
+            },
+            "Product": {
+                "required": [
+                    "id",
+                    "name",
+                    "price",
+                    "tax_cost",
+                    "manufacturing_cost",
+                    "currency",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Mechanical Keyboard"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "RGB mechanical keyboard",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "string",
+                        "example": "99.99"
+                    },
+                    "tax_cost": {
+                        "type": "string",
+                        "example": "15.00"
+                    },
+                    "manufacturing_cost": {
+                        "type": "string",
+                        "example": "45.00"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/Currency"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-10-28T16:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductPrice": {
+                "required": [
+                    "id",
+                    "product_id",
+                    "currency",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/Currency"
+                    },
+                    "price": {
+                        "type": "string",
+                        "example": "92.00"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreProductRequest": {
+                "required": [
+                    "name",
+                    "price",
+                    "currency_id",
+                    "tax_cost",
+                    "manufacturing_cost"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Mechanical Keyboard",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "RGB mechanical keyboard",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 99.99,
+                        "minimum": 0
+                    },
+                    "currency_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "tax_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 15,
+                        "minimum": 0
+                    },
+                    "manufacturing_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 45,
+                        "minimum": 0
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProductRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Mechanical Keyboard Pro",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Wireless RGB mechanical keyboard",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 129.99,
+                        "minimum": 0
+                    },
+                    "currency_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "tax_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 18,
+                        "minimum": 0
+                    },
+                    "manufacturing_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 55,
+                        "minimum": 0
+                    }
+                },
+                "type": "object"
+            },
+            "StoreProductPriceRequest": {
+                "required": [
+                    "currency_id",
+                    "price"
+                ],
+                "properties": {
+                    "currency_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 92,
+                        "minimum": 0
+                    }
+                },
+                "type": "object"
+            },
+            "NotFoundError": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "No query results for model [App\\Models\\Product] 999"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "The name field is required. (and 1 more error)"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": {
+                            "name": [
+                                "The name field is required."
+                            ]
+                        },
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Products",
+            "description": "Products"
+        },
+        {
+            "name": "Product Prices",
+            "description": "Product Prices"
+        }
+    ]
+}
