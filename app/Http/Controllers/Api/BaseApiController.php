@@ -80,10 +80,9 @@ use OpenApi\Attributes as OA;
 )]
 #[OA\Schema(
     schema: 'StoreProductPriceRequest',
-    required: ['currency_id', 'price'],
+    required: ['currency_id'],
     properties: [
         new OA\Property(property: 'currency_id', type: 'integer', example: 2),
-        new OA\Property(property: 'price', type: 'number', format: 'float', minimum: 0, example: 92.00),
     ],
     type: 'object'
 )]

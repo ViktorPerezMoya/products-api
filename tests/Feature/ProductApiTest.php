@@ -156,7 +156,6 @@ class ProductApiTest extends TestCase
         // Add price in EUR (POST /api/products/{id}/prices)
         $eurPriceResponse = $this->postJson("/api/products/{$product->id}/prices", [
             'currency_id' => $this->eur->id,
-            'price' => 92.00,
         ]);
 
         $eurPriceResponse->assertStatus(201)
@@ -183,7 +182,6 @@ class ProductApiTest extends TestCase
         // Add price in GBP (POST /api/products/{id}/prices)
         $gbpPriceResponse = $this->postJson("/api/products/{$product->id}/prices", [
             'currency_id' => $this->gbp->id,
-            'price' => 79.00,
         ]);
 
         $gbpPriceResponse->assertStatus(201)
@@ -219,8 +217,7 @@ class ProductApiTest extends TestCase
         // Non-existent product on prices endpoints
         $this->getJson('/api/products/9999/prices')->assertStatus(404);
         $this->postJson('/api/products/9999/prices', [
-            'currency_id' => $this->eur->id,
-            'price' => 92.00,
+            'currency_id' => $this->eur->id
         ])->assertStatus(404);
     }
 }

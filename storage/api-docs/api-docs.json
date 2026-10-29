@@ -543,19 +543,12 @@
             },
             "StoreProductPriceRequest": {
                 "required": [
-                    "currency_id",
-                    "price"
+                    "currency_id"
                 ],
                 "properties": {
                     "currency_id": {
                         "type": "integer",
                         "example": 2
-                    },
-                    "price": {
-                        "type": "number",
-                        "format": "float",
-                        "example": 92,
-                        "minimum": 0
                     }
                 },
                 "type": "object"

@@ -26,7 +26,6 @@ class StoreProductPriceRequest extends FormRequest
     {
         return [
             'currency_id' => ['required', 'integer', 'exists:currencies,id'],
-            'price' => ['required', 'numeric', 'min:0', 'max:9999999999.99'],
         ];
     }
 }

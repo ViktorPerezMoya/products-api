@@ -227,7 +227,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"currency_id\": 2,\n  \"price\": 92.00\n}",
+              "raw": "{\n  \"currency_id\": 2,\n}",
               "options": {
                 "raw": {
                   "language": "json"
